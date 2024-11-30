@@ -1,22 +1,6 @@
-import pygame
-import settings as s
 import random
 import numpy as np
-
-pygame.init()
-
-screen = pygame.display.set_mode((s.width, s.height))
-pygame.display.set_caption("Судоку")
-
-def drawGrid():
-   for i in range(10):
-    if i % 3 == 0:
-        lineThickness = 3
-    else:
-        lineThickness = 1
-    pygame.draw.line(screen, s.black, (0, i*s.cellSize), (s.width, i*s.cellSize), lineThickness)
-    pygame.draw.line(screen, s.black, (i*s.cellSize, 0), (i*s.cellSize, s.width), lineThickness)
-
+import copy
 
 def valid(table, row, col, num):
     if num in table[row]:
@@ -53,5 +37,17 @@ def generate():
     fill(table)
     return table
 
-def remove(table, numCells):
-    return True
+def remove(grid, numRemove):
+    for i in range(numRemove):
+        row = random.randint(0, 8)
+        col = random.randint(0, 8)
+        while grid[row][col] == 0:
+            row = random.randint(0, 8)
+            col = random.randint(0, 8)
+        grid[row][col] = 0
+    return grid
+
+sudokuGrid = generate()
+sudokuSolver = copy.deepcopy(sudokuGrid)
+numRemove = 52
+puzzle = remove(sudokuGrid, numRemove)
