@@ -7,6 +7,7 @@ pygame.init()
 
 screen = pygame.display.set_mode((s.width, s.height))
 pygame.display.set_caption("Судоку")
+screen.fill(s.white)
 
 def drawGrid():
    for i in range(10):
@@ -27,8 +28,8 @@ def drawNumbers(puzzle):
             screen.blit(text,(col * s.cellSize + s.cellSize // 4, row * s.cellSize + s.cellSize // 8))
 
 def getCell(pos):
-#определение ячейки
-    return True
+    x, y = pos
+    return y // s.cellSize, x // s.cellSize
 
 selectedCell = None
 
@@ -37,9 +38,41 @@ def higlightCell(selectedCell):
             row, col = selectedCell
             pygame.draw.rect(screen,s.blue, (col*s.cellSize, row * s.cellSize, s.cellSize, s.cellSize), 4)
 
-def handleEvents(puzzle):
-#логика поля
-    return True
+def finish(puzzle, sudokuSolver):
+    if solved(puzzle, sudokuSolver):
+        text = s.font.render("Поздравляю, Вы победили!", True, s.green)
+    else:
+        text = s.font.render("Судоку решен неверно", True, s.red)
+    screen.blit(text)
+def handleEvents(puzzle, sudokuSolver):
+
+    key_number = {pygame.K_1: 1,
+            pygame.K_2: 2,
+            pygame.K_3: 3,
+            pygame.K_4: 4,
+            pygame.K_5: 5,
+            pygame.K_6: 6,
+            pygame.K_7: 7,
+            pygame.K_8: 8,
+            pygame.K_9: 9
+                  }
+
+    running = True
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    finish(puzzle, sudokuSolver)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == pygame.BUTTON_LEFT:
+                    selectedCell = getCell(pygame.mouse.get_pos())
+            if event.type == pygame.KEYDOWN and selectedCell:
+                row, col = selectedCell
+                if event.key in key_number:
+                    puzzle[row][col] = key_number[event.key]
 
 def solved(puzzle, sudokuSolver):
     return np.array_equal(puzzle, sudokuSolver)
