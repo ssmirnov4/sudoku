@@ -22,7 +22,7 @@ def fill(table):
     for row in range(9):
         for col in range(9):
             if table[row][col] == 0:
-                for number in random.sample((1,9), 9):
+                for number in random.sample(range(1,10), 9):
                     if valid(table, row, col, number):
                         table[row][col] = number
                         if fill(table):
@@ -47,7 +47,8 @@ def remove(grid, numRemove):
         grid[row][col] = 0
     return grid
 
-sudokuGrid = generate()
-sudokuSolver = copy.deepcopy(sudokuGrid)
-numRemove = 52
-puzzle = remove(sudokuGrid, numRemove)
+def getPuzzle(numRemove = 52):
+    sudokuGrid = generate()
+    sudokuSolver = copy.deepcopy(sudokuGrid)
+    puzzle = copy.deepcopy(remove(sudokuGrid, numRemove))
+    return puzzle, sudokuSolver, sudokuGrid
